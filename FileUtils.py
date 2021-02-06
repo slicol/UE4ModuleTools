@@ -1,4 +1,5 @@
 import os
+import logging
 
 
 ########################################################################
@@ -39,3 +40,27 @@ def GetAllFiles(dirpath, _extnames = ""):
         pass
     pass
     return result
+
+
+def GetAllLines(filepath):
+    lines = []
+    try:
+        f = open(filepath,"r",encoding="UTF-8")
+        lines = f.readlines()
+        f.close()
+    except Exception as e:
+        f.close()
+
+        try:
+            f = open(filepath, "r")
+            lines = f.readlines()
+            f.close()
+        except Exception as e:
+            f.close()
+            
+            logging.error("GetAllLines: %s", filepath)
+            logging.error(e)
+            lines = []
+        pass
+    pass
+    return lines
