@@ -4,30 +4,15 @@ import FileUtils
 import re
 import logging
 import coloredlogs
-import CPPClassParser
-
-
-class UE4TargetRules:
-    Type = ""
-    Platform = ""
-
-
-class UE4ModuleRules:
-    Target = UE4TargetRules()
-    PublicIncludePaths = []
-    PrivateIncludePaths = []
-    PublicDependencyModuleNames = []
-    PrivateDependencyModuleNames = []
-
-    def LoadFromFile(self,path):
-        return
+import SourceCodeUtils
+import UE4ModuleRules
 
 
 
 class UE4Module:
     Dir = ""
     Name = ""
-    Rules = UE4ModuleRules()
+    Rules = UE4ModuleRules.UE4ModuleRules("")
     UClasses = []
     UStructs = []
     UEnums = []
@@ -38,8 +23,7 @@ class UE4Module:
     def __init__(self, dir):
         self.Dir = dir
         self.Name = os.path.basename(dir)
-        self.Rules = UE4ModuleRules()
-        self.Rules.LoadFromFile(dir + self.Name + ".Build.cs")
+        self.Rules = UE4ModuleRules.UE4ModuleRules(self.Name)
         self.UClasses = []
         self.UStructs = []
         self.UEnums = []
@@ -49,11 +33,14 @@ class UE4Module:
         self.Logger.setLevel(logging.DEBUG)
         self.Logger.warning("-"*(100-len(self.Name)))
 
-    def Parser(self):
+    def ParserSourceCode(self):
         Headers = FileUtils.GetAllFiles(self.Dir, ".h")
         for header in Headers:
             self.__ParserHeader(header)
         pass
+
+    def ParserRules(self):
+        self.Rules.LoadFromBuildFile(self.Dir + "\\" + self.Name + ".Build.cs")
             
 
     def __ParserHeader(self, header):    
@@ -116,7 +103,7 @@ class UE4Module:
 
 
     def __ParserUClass(self, header, line):
-        name = CPPClassParser.GetClassNameFromLine(line)
+        name = SourceCodeUtils.GetClassNameFromLine(line)
         if name == "" or (not name.startswith("U") and not name.startswith("A")):
             self.Logger.error("__ParserUClass Error: %s", header)
             self.Logger.error("__ParserUClass Error: %s", line)
@@ -127,7 +114,7 @@ class UE4Module:
         return True
         
     def __ParserUStruct(self, header, line):
-        name = CPPClassParser.GetStructNameFromLine(line)
+        name = SourceCodeUtils.GetStructNameFromLine(line)
         if name == "" or not name.startswith("F"):
             self.Logger.error("__ParserUStruct Error: %s", header)
             self.Logger.error("__ParserUStruct Error: %s", line)
@@ -138,8 +125,8 @@ class UE4Module:
         return True
 
     def __ParserUEnum(self, header, line):
-        name = CPPClassParser.GetEnumNameFromLine(line)
-        if name == "" or not name.startswith("E"):
+        name = SourceCodeUtils.GetEnumNameFromLine(line)
+        if name == "":
             self.Logger.error("__ParserUEnum Error: %s", header)
             self.Logger.error("__ParserUEnum Error: %s", line)
         else:
@@ -149,7 +136,7 @@ class UE4Module:
         return True
 
     def __ParserUInterface(self, header, line):
-        name = CPPClassParser.GetClassNameFromLine(line)
+        name = SourceCodeUtils.GetClassNameFromLine(line)
         if name == "" or not name.startswith("U"):
             self.Logger.error("__ParserUInterface Error: %s", header)
             self.Logger.error("__ParserUInterface Error: %s", line)
@@ -168,7 +155,9 @@ def CommandLine(args):
     coloredlogs.install(level='DEBUG')
     logging.info(args)
     module = UE4Module(args[1])
-    module.Parser()
+    module.ParserSourceCode()
+    module.ParserRules()
+    module.Rules.Dump()
     
 
 
@@ -176,5 +165,5 @@ def CommandLine(args):
 
 if __name__ == '__main__':
     #CommandLine(sys.argv)
-    CommandLine(["",r"W:\Project\DFMProj_PVE\DFM\Source\GameFrameWork"])
+    CommandLine(["",r"E:\Project\DFMProj\DFM\Source\GameFrameWork"])
     

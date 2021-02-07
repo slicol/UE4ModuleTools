@@ -28,7 +28,7 @@ def GetAllFiles(dirpath, _extnames = ""):
     pass
 
     for file in files:
-        filepath = dirpath + "/" + file;
+        filepath = dirpath + "/" + file
 
         if not os.path.isdir(filepath):
             if StringEndswith(filepath, extnames) :
@@ -64,3 +64,5 @@ def GetAllLines(filepath):
         pass
     pass
     return lines
+
+

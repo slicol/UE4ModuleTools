@@ -2,7 +2,7 @@ import os
 import FileUtils
 import re
 import logging
-import CPPClassParser
+import SourceCodeUtils
 import UE4Module
 import coloredlogs
 import math
@@ -60,7 +60,7 @@ class UE4CoreRedirects:
 
     def Dump(self, lines):
         self.Logger.warning("Dump() Begin-------")
-        pairs = self.NameMap.values();
+        pairs = self.NameMap.values()
         
         for pair in pairs:
             n = len(pair.OldName)
@@ -103,7 +103,7 @@ def GetAllModules(src_dir):
     mdls = []
     for mdl_dir in mdl_dirs:
         mdl = UE4Module.UE4Module(mdl_dir)
-        mdl.Parser()
+        mdl.ParserSourceCode()
         mdls.append(mdl)
     pass
     return mdls
@@ -186,4 +186,4 @@ def CommandLine(args):
 
 if __name__ == '__main__':
     #CommandLine(sys.argv)
-    CommandLine(["",r"W:\Project\DFMProj_PVE\DFM\Source"])
+    CommandLine(["",r"E:\Project\DFMProj\DFM\Source"])
