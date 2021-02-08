@@ -40,6 +40,7 @@ class UE4ModuleCreator:
 
 
     def CreateBuildRuleFile(self):
+        self.Logger.info("CreateBuildRuleFile")
         f = open(r"Templates/{ModuleName}.Build.cs", "r", encoding="UTF-8")
         text = f.read()
         f.close()
@@ -50,6 +51,7 @@ class UE4ModuleCreator:
         f.close()
 
     def CreateDirectories(self):
+        self.Logger.info("CreateDirectories")
         if not os.path.exists(self.Dir + "/Public"):
             os.mkdir(self.Dir + "/Public")
         pass
@@ -58,6 +60,7 @@ class UE4ModuleCreator:
         pass
 
     def CreateModuleHeaderFile(self):
+        self.Logger.info("CreateModuleHeaderFile")
         f = open(r"Templates/{ModuleName}Module.h", "r", encoding="UTF-8")
         text = f.read()
         f.close()
@@ -68,6 +71,7 @@ class UE4ModuleCreator:
 
 
     def CreateModuleSourceFile(self):
+        self.Logger.info("CreateModuleSourceFile")
         f = open(r"Templates/{ModuleName}Module.cpp", "r", encoding="UTF-8")
         text = f.read()
         f.close()
@@ -77,6 +81,19 @@ class UE4ModuleCreator:
         f.close()
 
 
+def CreateModule(dir):
+    creator = UE4ModuleCreator(dir)
+    creator.CreateAll()
+
+def CreateModuleBatch(basedir):
+    dirs = os.listdir(basedir)
+    for dir in dirs:
+        dir = basedir + "/" + dir
+        if os.path.isdir(dir):
+            CreateModule(dir)
+        pass
+    pass
+
 
 
 
@@ -84,8 +101,11 @@ def CommandLine(args):
     logging.getLogger().setLevel(logging.DEBUG)
     coloredlogs.install(level='DEBUG')
     logging.info(args)
-    creator = UE4ModuleCreator(args[1])
-    creator.CreateAll()
+    if len(args) == 2:
+        CreateModule(args[1])
+    elif len(args) > 2 and args[2] == "-Batch":
+        CreateModuleBatch(args[1])
+    pass
     
 
 
@@ -93,5 +113,10 @@ def CommandLine(args):
 
 if __name__ == '__main__':
     #CommandLine(sys.argv)
-    CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework\GPAnimation"])
+    CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore\DFMVehicle"])
+    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework","-Batch"])
+    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore","-Batch"])
+    
+
+
     

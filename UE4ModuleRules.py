@@ -109,5 +109,5 @@ def CommandLine(args):
 
 if __name__ == '__main__':
     #CommandLine(sys.argv)
-    CommandLine(["",r"E:\Project\DFMProj\DFM\Source\GameFrameWork\GameFrameWork.Test.Build.cs"])
+    CommandLine(["",r"E:\Project\DFMProj\DFM\Source\GameFrameWork\GameFrameWork.Build.cs"])
     

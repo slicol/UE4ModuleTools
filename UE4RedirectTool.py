@@ -179,11 +179,11 @@ def CommandLine(args):
     logging.getLogger().setLevel(logging.WARN)
     coloredlogs.install(level='WARN')
     logging.info(args)
-    Redirect(args[1], args[1])
+    Redirect(args[1], args[2])
     
 
 
 
 if __name__ == '__main__':
     #CommandLine(sys.argv)
-    CommandLine(["",r"E:\Project\DFMProj\DFM\Source"])
+    CommandLine(["",r"E:\Project\DFMProj\DFM\Source",r"E:\Project\DFMProj\DFM\Source"])
