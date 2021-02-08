@@ -41,6 +41,10 @@ class UE4ModuleCreator:
 
     def CreateBuildRuleFile(self):
         self.Logger.info("CreateBuildRuleFile")
+        rule_file_path = self.Dir + "/" + self.Name + ".Build.cs"
+        if os.path.exists(rule_file_path):
+            self.Logger.warning("RuleFile Is Existed: %s", rule_file_path)
+        pass
         f = open(r"Templates/{ModuleName}.Build.cs", "r", encoding="UTF-8")
         text = f.read()
         f.close()
@@ -112,8 +116,10 @@ def CommandLine(args):
 
 
 if __name__ == '__main__':
-    #CommandLine(sys.argv)
-    CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore\DFMVehicle"])
+    curdir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(curdir)
+    CommandLine(sys.argv)
+    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore\DFMVehicle"])
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework","-Batch"])
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore","-Batch"])
     
