@@ -1,5 +1,8 @@
 ﻿// Initial By UE4ModuleCreator.
 using UnrealBuildTool;
+using Tools.DotNETCommon;
+using System.Collections.Generic;
+
 public class {ModuleName} : ModuleRules
 {
 	public {ModuleName}(ReadOnlyTargetRules Target): base(Target)
@@ -23,7 +26,6 @@ public class {ModuleName} : ModuleRules
 		//对Foundations/GPFramework/DFMGameCore的依赖
 		//---------------------------------------------------------------------
 		PublicDependencyModuleNames.AddRange(new string[]{
-			"GameCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]{
@@ -47,4 +49,21 @@ public class {ModuleName} : ModuleRules
             PrivateDependencyModuleNames.Add("ApplicationCore");
 		}
 	}
+
+
+	//如果你的模块有分层的概念，你有可能需要获取指定层的所有模块名
+ 	public List<string> GetModuleNamesOfLayer(string LayerName)
+    {
+        string Path = this.Target.ProjectFile.Directory.FullName + "/Source/" + LayerName;
+        System.IO.DirectoryInfo DirInfo = new System.IO.DirectoryInfo(Path);
+        System.IO.DirectoryInfo[] SubDirInfos = DirInfo.GetDirectories();
+
+        List<string> Result = new List<string>();
+        for (int i = 0; i < SubDirInfos.Length; ++i)
+        {
+            Result.Add(SubDirInfos[i].Name);
+        }
+        return Result;
+    }
+
 }
