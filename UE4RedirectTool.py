@@ -61,8 +61,13 @@ class UE4CoreRedirects:
     def Dump(self, lines):
         self.Logger.warning("Dump() Begin-------")
         pairs = self.NameMap.values()
-        
+        count = 0
         for pair in pairs:
+            if pair.OldName == pair.NewName:
+                continue
+            pass
+
+            count += 1
             n = len(pair.OldName)
             space = ""
             if n < 50:
@@ -80,7 +85,7 @@ class UE4CoreRedirects:
                 lines.append(line + "\n")
             pass
         pass
-        self.Logger.warning("Dump() End---------[%d]", len(pairs))
+        self.Logger.warning("Dump() End---------[%d]", count)
         
 
     
@@ -186,4 +191,4 @@ def CommandLine(args):
 
 if __name__ == '__main__':
     #CommandLine(sys.argv)
-    CommandLine(["",r"E:\Project\DFMProj\DFM\Source",r"E:\Project\DFMProj\DFM\Source"])
+    CommandLine(["",r"E:\Project\DFMProj\DFM\Source",r"W:\Project\DFMProj_Refactor\DFM\Source"])
