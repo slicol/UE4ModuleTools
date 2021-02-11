@@ -44,6 +44,7 @@ class UE4ModuleCreator:
         rule_file_path = self.Dir + "/" + self.Name + ".Build.cs"
         if os.path.exists(rule_file_path):
             self.Logger.warning("RuleFile Is Existed: %s", rule_file_path)
+            return
         pass
         f = open(r"Templates/{ModuleName}.Build.cs", "r", encoding="UTF-8")
         text = f.read()
@@ -65,22 +66,32 @@ class UE4ModuleCreator:
 
     def CreateModuleHeaderFile(self):
         self.Logger.info("CreateModuleHeaderFile")
+        filepath = self.Dir + "/Public/" + self.Name + "Module.h"
+        if os.path.exists(filepath):
+            self.Logger.warning("HeaderFile Is Existed: %s", filepath)
+            return
+        pass
         f = open(r"Templates/{ModuleName}Module.h", "r", encoding="UTF-8")
         text = f.read()
         f.close()
         text = text.replace(r"{ModuleName}", self.Name)
-        f = open(self.Dir + "/Public/" + self.Name + "Module.h", "w", encoding="UTF-8")
+        f = open(filepath, "w", encoding="UTF-8")
         f.write(text)
         f.close()
 
 
     def CreateModuleSourceFile(self):
         self.Logger.info("CreateModuleSourceFile")
+        filepath = self.Dir + "/Private/" + self.Name + "Module.cpp"
+        if os.path.exists(filepath):
+            self.Logger.warning("SourceFile Is Existed: %s", filepath)
+            return
+        pass
         f = open(r"Templates/{ModuleName}Module.cpp", "r", encoding="UTF-8")
         text = f.read()
         f.close()
         text = text.replace(r"{ModuleName}", self.Name)
-        f = open(self.Dir + "/Private/" + self.Name + "Module.cpp", "w", encoding="UTF-8")
+        f = open(filepath, "w", encoding="UTF-8")
         f.write(text)
         f.close()
 
@@ -120,7 +131,7 @@ if __name__ == '__main__':
     os.chdir(curdir)
     CommandLine(sys.argv)
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore\DFMVehicle"])
-    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework","-Batch"])
+    CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework","-Batch"])
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore","-Batch"])
     
 

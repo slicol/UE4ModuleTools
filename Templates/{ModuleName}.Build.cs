@@ -51,8 +51,8 @@ public class {ModuleName} : ModuleRules
 	}
 
 
-	//如果你的模块有分层的概念，你有可能需要获取指定层的所有模块名
- 	public List<string> GetModuleNamesOfLayer(string LayerName)
+    //如果你的模块有分层的概念，你有可能需要获取指定层的所有模块名
+    public List<string> GetModuleNamesOfLayer(string LayerName, string Excludes = null)
     {
         string Path = this.Target.ProjectFile.Directory.FullName + "/Source/" + LayerName;
         System.IO.DirectoryInfo DirInfo = new System.IO.DirectoryInfo(Path);
@@ -61,7 +61,18 @@ public class {ModuleName} : ModuleRules
         List<string> Result = new List<string>();
         for (int i = 0; i < SubDirInfos.Length; ++i)
         {
-            Result.Add(SubDirInfos[i].Name);
+            string Item = SubDirInfos[i].Name;
+            if (Item == this.Name)
+            {
+                continue;
+            }
+
+            if (Excludes != null && Excludes.Contains(Item))
+            {
+                continue;
+            }
+
+            Result.Add(Item);
         }
         return Result;
     }

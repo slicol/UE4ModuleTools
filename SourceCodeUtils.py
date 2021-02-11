@@ -1,3 +1,4 @@
+import sys
 import os
 import re
 import FileUtils
@@ -45,6 +46,9 @@ def TrimCStyleComments(text):
     return regex.sub(_replacer, text)
 
 
+
+
+
 def NormalizeIncludeSlash(filepath):
     lines = FileUtils.GetAllLines(filepath)
     num = len(lines)
@@ -65,8 +69,7 @@ def NormalizeIncludeSlash(filepath):
         f.writelines(lines)
         f.close()
     else:
-        a = 0
-        #logging.info("NormalizeIncludeSlash: %s, No Changed", filepath)
+        logging.info("NormalizeIncludeSlash: %s, No Changed", filepath)
     pass
 
 
@@ -85,6 +88,60 @@ def NormalizeIncludeSlashAuto(dir_or_filepath):
     pass
 
 
+def NormalizeModuleAPIMacro(filepath, macro):
+    RE_API_MACRO = r"(class|struct)\s*(\w+_API)\s+\w+"
+    if macro == "":
+        return
+    pass
+    lines = FileUtils.GetAllLines(filepath)
+    num = len(lines)
+    changed = False
+    for i in range(0, num):
+        line = lines[i]
+        match = re.search(RE_API_MACRO, line)
+        if not match == None:
+            old = match.group(2)
+            if not old == macro:
+                line = line.replace(old, macro)
+                changed = True
+                lines[i] = line
+            pass
+        pass
+    pass
+    if changed:
+        logging.warning("NormalizeModuleAPIMacro: %s", filepath)
+        f = open(filepath, "w", encoding="UTF-8")
+        f.writelines(lines)
+        f.close()
+    else:
+        logging.info("NormalizeModuleAPIMacro: %s, No Changed", filepath)
+    pass
+
+
+def NormalizeModuleAPIMacroOfUE4(mdl_dir):
+    if not FileUtils.IsUE4ModuleDir(mdl_dir):
+        logging.error("NormalizeModuleAPIMacroOfUE4() [%s] Is Not UE4Module!!!", mdl_dir)
+        return
+    pass
+    mdl_name = os.path.basename(mdl_dir)
+    api_macro = mdl_name.upper() + "_API"
+    paths = FileUtils.GetAllFiles(mdl_dir, ".h")
+    for path in paths:
+        NormalizeModuleAPIMacro(path, api_macro)
+    pass
+
+
+def NormalizeModuleAPIMacroOfUE4Auto(srcdir_or_mdldir):
+    if not FileUtils.IsUE4ModuleDir(srcdir_or_mdldir):
+        dirs = FileUtils.GetAllUE4ModuleDirs(srcdir_or_mdldir)
+        for dir in dirs:
+            NormalizeModuleAPIMacroOfUE4(dir)
+        pass
+    else:
+        NormalizeModuleAPIMacroOfUE4(srcdir_or_mdldir)
+    pass
+
+
 
 
 def CommandLine(args):
@@ -93,6 +150,8 @@ def CommandLine(args):
     logging.info(args)
     if args[1] == "NormalizeIncludeSlash":
         NormalizeIncludeSlashAuto(args[2])
+    elif args[1] == "NormalizeModuleAPIMacro":
+        NormalizeModuleAPIMacroOfUE4Auto(args[2])
     pass
     
 
@@ -100,6 +159,7 @@ def CommandLine(args):
 if __name__ == '__main__':
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
-    CommandLine(sys.argv)
+    #CommandLine(sys.argv)
     #CommandLine(["", "NormalizeIncludeSlash", r"E:\Project\DFMProj\DFM\Source"])
+    CommandLine(["", "NormalizeModuleAPIMacro", r"W:\Project\DFMProj_Refactor\DFM\Source"])
     

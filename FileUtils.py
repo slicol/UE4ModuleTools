@@ -66,3 +66,16 @@ def GetAllLines(filepath):
     return lines
 
 
+def GetAllUE4ModuleDirs(src_dir):
+    mdl_build_files = GetAllFiles(src_dir, ".Build.cs")
+    mdl_dirs = []
+    for filepath in mdl_build_files:
+        mdl_dir = os.path.dirname(filepath)
+        mdl_dirs.append(mdl_dir)
+    pass
+    return mdl_dirs
+
+def IsUE4ModuleDir(dir):
+    mdl_name = os.path.basename(dir)
+    mdl_rule_file_path = dir + "/" + mdl_name + ".Build.cs"
+    return os.path.exists(mdl_rule_file_path)
