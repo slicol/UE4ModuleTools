@@ -36,7 +36,11 @@ public class {ModuleName} : ModuleRules
 		//---------------------------------------------------------------------
 		//！！！不要包含其它模块的路径！！！
 		//---------------------------------------------------------------------
-		PublicIncludePaths.AddRange(new string[]{"{ModuleDirectory}/Public"});
+		PublicIncludePaths.AddRange(new string[]
+		{
+			"{ModuleDirectory}",
+			"{ModuleDirectory}/Public",
+		});
 		PrivateIncludePaths.AddRange(new string[]{"{ModuleDirectory}/Private"});
 		//---------------------------------------------------------------------
 
@@ -52,27 +56,35 @@ public class {ModuleName} : ModuleRules
 
 
     //如果你的模块有分层的概念，你有可能需要获取指定层的所有模块名
-    public List<string> GetModuleNamesOfLayer(string LayerName, string Excludes = null)
+    public System.Collections.Generic.List<string> GetModuleNamesOfLayer(string LayerName, string Excludes = "")
     {
-        string Path = this.Target.ProjectFile.Directory.FullName + "/Source/" + LayerName;
-        System.IO.DirectoryInfo DirInfo = new System.IO.DirectoryInfo(Path);
+        string LayerPath = "";
+        //LayerPath = this.Target.ProjectFile.Directory.FullName + "/Source/" + LayerName;
+
+        Tools.DotNETCommon.FileReference ProjectFile = null;
+        System.Reflection.FieldInfo info = this.GetType().GetField("ProjectFile");
+        if (info == null)
+        {
+            var Target = this.GetType().GetField("Target").GetValue(this);
+            System.Reflection.PropertyInfo pinfo = Target.GetType().GetProperty("ProjectFile");
+            ProjectFile = pinfo.GetValue(Target) as Tools.DotNETCommon.FileReference;
+        }
+        else
+        {
+            ProjectFile = info.GetValue(this) as Tools.DotNETCommon.FileReference;
+        }
+        LayerPath = ProjectFile.Directory.FullName + "/Source/" + LayerName;
+        System.IO.DirectoryInfo DirInfo = new System.IO.DirectoryInfo(LayerPath);
         System.IO.DirectoryInfo[] SubDirInfos = DirInfo.GetDirectories();
 
-        List<string> Result = new List<string>();
+        System.Collections.Generic.List<string> Result = new System.Collections.Generic.List<string>();
         for (int i = 0; i < SubDirInfos.Length; ++i)
         {
             string Item = SubDirInfos[i].Name;
-            if (Item == this.Name)
+            if (!Excludes.Contains(Item) && Item != this.Name)
             {
-                continue;
+                Result.Add(Item);
             }
-
-            if (Excludes != null && Excludes.Contains(Item))
-            {
-                continue;
-            }
-
-            Result.Add(Item);
         }
         return Result;
     }

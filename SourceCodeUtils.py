@@ -89,7 +89,9 @@ def NormalizeIncludeSlashAuto(dir_or_filepath):
 
 
 def NormalizeModuleAPIMacro(filepath, macro):
-    RE_API_MACRO = r"(class|struct)\s*(\w+_API)\s+\w+"
+    #RE_API_MACRO = r"(class|struct)\s*(\w+_API)\s+\w+"
+    RE_API_MACRO = r"\s+([A-Z]+_API)\s+"
+    
     if macro == "":
         return
     pass
@@ -100,7 +102,7 @@ def NormalizeModuleAPIMacro(filepath, macro):
         line = lines[i]
         match = re.search(RE_API_MACRO, line)
         if not match == None:
-            old = match.group(2)
+            old = match.group(1)
             if not old == macro:
                 line = line.replace(old, macro)
                 changed = True

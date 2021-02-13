@@ -131,8 +131,9 @@ if __name__ == '__main__':
     os.chdir(curdir)
     CommandLine(sys.argv)
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore\DFMVehicle"])
-    CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework","-Batch"])
+    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework","-Batch"])
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore","-Batch"])
+    CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMBusiness","-Batch"])
     
 
 
