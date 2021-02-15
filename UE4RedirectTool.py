@@ -6,6 +6,7 @@ import SourceCodeUtils
 import UE4Module
 import coloredlogs
 import math
+import time
 
 class UE4RedirectPair:
     KeyName = ""
@@ -158,7 +159,7 @@ def SetAllRedirectsWithDst(dst_dir,class_redirects,struct_redirects,enum_redirec
     pass
 
 
-def Redirect(src_dir,dst_dir):
+def GenRedirectConfig(src_dir,dst_dir):
     class_redirects = UE4CoreRedirects("ClassRedirects")
     struct_redirects = UE4CoreRedirects("StructRedirects")
     enum_redirects = UE4CoreRedirects("EnumRedirects")
@@ -176,6 +177,13 @@ def Redirect(src_dir,dst_dir):
     f.close()
 
 
+def ResavePackages(basedir):
+    t = time.time() - 24*3600*2
+    paths = FileUtils.GetAllFiles(basedir,".uasset", [0,t])
+    for path in paths:
+        logging.warning(path)
+    pass
+
 
     
 
@@ -184,11 +192,23 @@ def CommandLine(args):
     logging.getLogger().setLevel(logging.WARN)
     coloredlogs.install(level='WARN')
     logging.info(args)
-    Redirect(args[1], args[2])
+    if args[1] == "GenRedirectConfig":
+        GenRedirectConfig(args[2], args[3])
+    elif args[1] == "ResavePackages":
+        ResavePackages(args[2])
+    pass
     
 
 
 
 if __name__ == '__main__':
     #CommandLine(sys.argv)
-    CommandLine(["",r"E:\Project\DFMProj\DFM\Source",r"W:\Project\DFMProj_Refactor\DFM\Source"])
+    #CommandLine(["", "GenRedirectConfig", r"E:\Project\DFMProj\DFM\Source",r"W:\Project\DFMProj_Refactor\DFM\Source"])
+    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\UI\UIBP\Hud\H_LargePopup\BigMap"])
+    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\BluePrints"])
+    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Maps"])
+    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Models"])
+    CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\UI"])
+    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Environment"])
+    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Effects"])
+    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\DataTables"])

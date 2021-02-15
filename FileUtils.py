@@ -17,7 +17,7 @@ def StringEndswith(str, suffix):
 
 
 ########################################################################
-def GetAllFiles(dirpath, _extnames = ""):
+def GetAllFiles(dirpath, _extnames = "",_mtimescope = []):
     files = os.listdir(dirpath)
     result = []
     extnames = []
@@ -27,19 +27,35 @@ def GetAllFiles(dirpath, _extnames = ""):
         extnames = _extnames.split("|")
     pass
 
+    bValidModifyTimeScope = len(_mtimescope) == 2
+    mtime_min = 0
+    mtime_max = 0
+    if bValidModifyTimeScope:
+        mtime_min = _mtimescope[0]
+        mtime_max = _mtimescope[1]
+    pass
+
     for file in files:
         filepath = dirpath + "/" + file
 
         if not os.path.isdir(filepath):
             if StringEndswith(filepath, extnames) :
-                result.append(filepath)
+                if bValidModifyTimeScope:
+                    st = os.stat(filepath)
+                    if st.st_mtime >= mtime_min and st.st_mtime <= mtime_max:
+                        result.append(filepath)
+                    pass
+                else:
+                    result.append(filepath)
+                pass
             pass
         else:
-            tmp = GetAllFiles(filepath, extnames)
+            tmp = GetAllFiles(filepath, extnames, _mtimescope)
             result.extend(tmp)
         pass
     pass
     return result
+
 
 
 def GetAllLines(filepath):
