@@ -97,8 +97,10 @@ class UE4ModuleCreator:
 
 
 def CreateModule(dir):
-    creator = UE4ModuleCreator(dir)
-    creator.CreateAll()
+    if not FileUtils.IsUE4ModuleDir(dir):
+        creator = UE4ModuleCreator(dir)
+        creator.CreateAll()
+    pass
 
 def CreateModuleBatch(basedir):
     dirs = os.listdir(basedir)
@@ -130,7 +132,7 @@ if __name__ == '__main__':
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     CommandLine(sys.argv)
-    CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework\GPGameFlow"])
+    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework\GPGameFlow"])
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework","-Batch"])
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore","-Batch"])
     #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMBusiness","-Batch"])

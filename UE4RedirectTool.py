@@ -7,6 +7,7 @@ import UE4Module
 import coloredlogs
 import math
 import time
+import sys
 
 class UE4RedirectPair:
     KeyName = ""
@@ -64,10 +65,10 @@ class UE4CoreRedirects:
         pairs = self.NameMap.values()
         count = 0
         for pair in pairs:
-            if pair.OldName == pair.NewName:
+            if pair.OldName == pair.NewName or pair.OldName == "":
                 continue
             pass
-
+            
             count += 1
             n = len(pair.OldName)
             space = ""
@@ -177,12 +178,26 @@ def GenRedirectConfig(src_dir,dst_dir):
     f.close()
 
 
-def ResavePackages(basedir):
-    t = time.time() - 24*3600*2
+def GenResavePackages(basedir, excludes):
+    t = time.time() - 4*3600
+    exclude_tokens = excludes.split("|")
     paths = FileUtils.GetAllFiles(basedir,".uasset", [0,t])
+    f = open(basedir + r"\GenResavePackagesDump.ini", mode="w",encoding="UTF-8")
     for path in paths:
-        logging.warning(path)
+        exclude_flag = False
+        for token in exclude_tokens:
+            if path.find(token) > 0:
+                exclude_flag = True
+                break
+            pass
+        pass
+        if exclude_flag:
+            continue
+        pass
+        f.write(path + "\n")
+        #logging.warning(path)
     pass
+    f.close()
 
 
     
@@ -194,8 +209,8 @@ def CommandLine(args):
     logging.info(args)
     if args[1] == "GenRedirectConfig":
         GenRedirectConfig(args[2], args[3])
-    elif args[1] == "ResavePackages":
-        ResavePackages(args[2])
+    elif args[1] == "GenResavePackages":
+        GenResavePackages(args[2], args[3])
     pass
     
 
@@ -205,10 +220,10 @@ if __name__ == '__main__':
     #CommandLine(sys.argv)
     #CommandLine(["", "GenRedirectConfig", r"E:\Project\DFMProj\DFM\Source",r"W:\Project\DFMProj_Refactor\DFM\Source"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\UI\UIBP\Hud\H_LargePopup\BigMap"])
-    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\BluePrints"])
+    CommandLine(["", "GenResavePackages", r"L:/Project/DFMProj_Master/DFM/Content", r"WwiseAudio|Texture|Textures|Materials|Material|png.uasset|GenTexDir"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Maps"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Models"])
-    CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\UI"])
+    #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\UI"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Environment"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Effects"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\DataTables"])
