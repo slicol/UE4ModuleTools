@@ -1,6 +1,7 @@
 import os
 import logging
-
+import chardet
+import re
 
 ########################################################################
 def StringEndswith(str, suffix):
@@ -95,3 +96,75 @@ def IsUE4ModuleDir(dir):
     mdl_name = os.path.basename(dir)
     mdl_rule_file_path = dir + "/" + mdl_name + ".Build.cs"
     return os.path.exists(mdl_rule_file_path)
+
+
+def IsUtf8File(filepath):
+    f = open(filepath,"rb")
+    rawdata = f.read()
+    result = chardet.detect(rawdata)
+    encoding = result['encoding']
+    if encoding == None:
+        logging.error("%s <encoding = None>!!!", filepath)
+        return False
+    pass
+
+    if encoding.lower().startswith("utf-8"):
+        if result["confidence"] >= 0.99:
+            return True
+        pass
+    pass
+    return False
+
+def DetectUtf8FileConfidence(filepath):
+    f = open(filepath,"rb")
+    rawdata = f.read()
+    result = chardet.detect(rawdata)
+    encoding = result['encoding']
+    if encoding == None:
+        logging.error("%s <encoding = None>!!!")
+        return 0
+    pass    
+    if encoding.lower().startswith("utf-8"):
+        return result["confidence"]
+    pass
+    return 0
+
+
+def EnsureUtf8WithChinese(filepath):
+    RE_CheckChinese = re.compile(u'[\u4e00-\u9fa5]+',re.UNICODE)
+    if IsUtf8File(filepath):
+        return True
+    pass
+    lines = GetAllLines(filepath)
+    flag = 0
+    for line in lines:
+        match = re.search(RE_CheckChinese, line)
+        if match is None:
+            continue
+        pass
+        
+        linesize = len(line)
+        for i in  range(linesize):
+            if flag == 0:
+                if ord(line[i]) & 0x80 == 0x00:
+                    flag = 0
+                elif ord(line[i]) & 0xE0 == 0xC0:
+                    flag = 1
+                elif ord(line[i]) & 0xF0 == 0xE0:
+                    flag = 2
+                elif ord(line[i]) & 0xF8 == 0xF0:
+                    flag = 3
+                else:
+                    return False
+                pass
+            else:
+                if not ord(line[i]) & 0xC0 == 0x80:
+                    return False
+                pass
+                flag -= 1
+            pass
+        pass
+    pass
+    return True    
+    
+

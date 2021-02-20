@@ -144,24 +144,36 @@ def NormalizeModuleAPIMacroOfUE4Auto(srcdir_or_mdldir):
     pass
 
 
+def ListNotUtf8SourceFile(srcdir):
+    paths = FileUtils.GetAllFiles(srcdir, ".h|.cpp")
+    for path in paths:
+        if not FileUtils.EnsureUtf8WithChinese(path):
+            logging.warning(path)
+        pass
+    pass
+
 
 
 def CommandLine(args):
-    logging.getLogger().setLevel(logging.DEBUG)
-    coloredlogs.install(level='DEBUG')
+    logging.getLogger().setLevel(logging.WARN)
+    coloredlogs.install(level='WARN')
     logging.info(args)
     if args[1] == "NormalizeIncludeSlash":
         NormalizeIncludeSlashAuto(args[2])
     elif args[1] == "NormalizeModuleAPIMacro":
         NormalizeModuleAPIMacroOfUE4Auto(args[2])
+    elif args[1] == "ListNotUtf8SourceFile":
+        ListNotUtf8SourceFile(args[2])
     pass
     
+
+
 
 
 if __name__ == '__main__':
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
-    CommandLine(sys.argv)
-    #CommandLine(["", "NormalizeIncludeSlash", r"E:\Project\DFMProj\DFM\Source"])
+    #CommandLine(sys.argv)
+    CommandLine(["", "ListNotUtf8SourceFile", r"E:\Project\DFMProj\DFM\Source"])
     #CommandLine(["", "NormalizeModuleAPIMacro", r"W:\Project\DFMProj_Refactor\DFM\Source"])
     
