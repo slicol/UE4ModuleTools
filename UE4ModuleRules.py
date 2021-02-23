@@ -108,6 +108,8 @@ def CommandLine(args):
     
 
 if __name__ == '__main__':
-    #CommandLine(sys.argv)
-    CommandLine(["",r"E:\Project\DFMProj\DFM\Source\GameFrameWork\GameFrameWork.Build.cs"])
+    curdir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(curdir)
+    CommandLine(sys.argv)
+    #CommandLine(["",r"E:\Project\DFMProj\DFM\Source\GameFrameWork\GameFrameWork.Build.cs"])
     

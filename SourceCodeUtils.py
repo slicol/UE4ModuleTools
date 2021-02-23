@@ -173,7 +173,7 @@ def CommandLine(args):
 if __name__ == '__main__':
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
-    #CommandLine(sys.argv)
-    CommandLine(["", "ListNotUtf8SourceFile", r"E:\Project\DFMProj\DFM\Source"])
+    CommandLine(sys.argv)
+    #CommandLine(["", "ListNotUtf8SourceFile", r"E:\Project\DFMProj\DFM\Source"])
     #CommandLine(["", "NormalizeModuleAPIMacro", r"W:\Project\DFMProj_Refactor\DFM\Source"])
     

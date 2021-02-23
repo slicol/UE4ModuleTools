@@ -217,10 +217,12 @@ def CommandLine(args):
 
 
 if __name__ == '__main__':
-    #CommandLine(sys.argv)
+    curdir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(curdir)
+    CommandLine(sys.argv)
     #CommandLine(["", "GenRedirectConfig", r"E:\Project\DFMProj\DFM\Source",r"W:\Project\DFMProj_Refactor\DFM\Source"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\UI\UIBP\Hud\H_LargePopup\BigMap"])
-    CommandLine(["", "GenResavePackages", r"L:/Project/DFMProj_Master/DFM/Content", r"WwiseAudio|Texture|Textures|Materials|Material|png.uasset|GenTexDir"])
+    #CommandLine(["", "GenResavePackages", r"L:/Project/DFMProj_Master/DFM/Content", r"WwiseAudio|Texture|Textures|Materials|Material|png.uasset|GenTexDir"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Maps"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\Models"])
     #CommandLine(["", "ResavePackages", r"W:\Project\DFMProj_Refactor\DFM\Content\UI"])

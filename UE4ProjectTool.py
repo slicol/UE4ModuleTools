@@ -58,10 +58,12 @@ def CommandLine(args):
 
 
 if __name__ == '__main__':
-    #CommandLine(sys.argv)
-    CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore", "Runtime", "Default"])
-    CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework", "Runtime", "Default"])
-    CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\Editor", "Runtime", "Default"])
+    curdir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(curdir)
+    CommandLine(sys.argv)
+    #CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore", "Runtime", "Default"])
+    #CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework", "Runtime", "Default"])
+    #CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\Editor", "Runtime", "Default"])
     
     
     
