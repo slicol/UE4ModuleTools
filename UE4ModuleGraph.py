@@ -9,27 +9,27 @@ from UE4Module import UE4Module
 
 
 
-class DFMModuleGraphSide:
-    SrcNode = ""
-    DstNode = ""
-    def __init__(self, src,dst):
-        self.SrcNode = src
-        self.DstNode = dst
+class UE4ModuleGraphSide:
+    SrcNodeName = ""
+    DstNodeName = ""
+    def __init__(self, src_node_name,dst_node_name):
+        self.SrcNodeName = src_node_name
+        self.DstNodeName = dst_node_name
 
 
-class DFMModuleGraphNode:
+class UE4ModuleGraphNode:
     Name = ""
-    Layer = ""
-    NextNodes = [] 
+    LayerName = ""
+    NextNodeNames = [] 
     
     def __init__(self, name):
         self.Name = name
-        self.Layer = ""
-        self.NextNodes = []
+        self.LayerName = ""
+        self.NextNodeNames = []
         
 
 
-class DFMModuleGraphLayer:
+class UE4ModuleGraphLayer:
     Name = ""
     Nodes = [] 
     Sides = []
@@ -43,31 +43,55 @@ class DFMModuleGraphLayer:
 
 
 
-def CollectModuleNode(mdldir, modules:{}):
+def CollectModuleNode(mdldir, layername:str, modules:{}):
     module = UE4Module(mdldir)
     module.ParserRules()
-    node = DFMModuleGraphNode(module.Name)
-    node.NextNodes = module.Rules.PublicDependencyModuleNames
-    node.NextNodes.extend(module.Rules.PrivateDependencyModuleNames)
+    node = UE4ModuleGraphNode(module.Name)
+    node.NextNodeNames = module.Rules.PublicDependencyModuleNames
+    node.NextNodeNames.extend(module.Rules.PrivateDependencyModuleNames)
+    node.LayerName = layername
     modules[node.Name] = node
     return node
 
 
 def CollectLayerNodes(layerdir, layers:{}, modules:{}):
-    layer = DFMModuleGraphLayer(os.path.dirname(layerdir))
+    layer = UE4ModuleGraphLayer(os.path.basename(layerdir))
     mdl_dirs = FileUtils.GetAllUE4ModuleDirs(layerdir)
     for mdl_dir in mdl_dirs:
-        node = CollectModuleNode(mdl_dir, modules)
-        node.Layer = layer.Name
+        node = CollectModuleNode(mdl_dir, layer.Name, modules)
         layer.Nodes.append(node)
     pass
     layers[layer.Name] = layer
     return layer
 
 
-def CollectLayerSides(layer:DFMModuleGraphLayer, sides:[], layers:{}, modules:{}):
+
+def CollectLayerSides(layer:UE4ModuleGraphLayer, sides:[], layers:{}, modules:{}):
     for node in layer.Nodes:
-        
+        for next_node_name in node.NextNodeNames:
+            next_node:UE4ModuleGraphNode = modules.get(next_node_name)
+            if not next_node == None:
+                if next_node.LayerName == layer.Name or next_node.LayerName == "" :
+                    layer.Sides.append(UE4ModuleGraphSide(node.Name, next_node.Name))
+                    sides.append(UE4ModuleGraphSide(node.Name, next_node.Name))
+                else:
+                    next_layer:UE4ModuleGraphLayer = layers.get(next_node.LayerName)
+                    if not next_layer == None:
+                        if layer.NextLayers.index(next_layer) < 0:
+                            layer.NextLayers.append(next_layer)
+                            sides.append(UE4ModuleGraphSide(layer.Name, next_layer.Name))
+                        pass
+                    else:
+                        logging.error("Layer Is Not Exist: %s", next_node.LayerName)
+                    pass
+                pass
+            else:
+                logging.warning("Module Is Out Of Graph Scope: %s", next_node_name)
+            pass
+        pass
+    pass
+
+
 
 
 
@@ -79,29 +103,25 @@ def CommandLine(args):
     coloredlogs.install(level='DEBUG')
     logging.info(args)
     basedir = args[1]
+    layernames = args[2].split("|")
 
     modules = {}
     layers = {}
     sides = []
-    CollectModuleNode(basedir + "/Source/DFM", modules)
-    CollectLayerNodes(basedir + "/Source/Editor", layers, modules)
-    CollectLayerNodes(basedir + "/Source/DFMBusiness", layers, modules)
-    CollectLayerNodes(basedir + "/Source/DFMGameMode", layers, modules)
-    CollectLayerNodes(basedir + "/Source/DFMGameCore", layers, modules)
-    CollectLayerNodes(basedir + "/Source/GPFramework", layers, modules)
 
-    sides.append(DFMModuleGraphSide("DFM","DFMBusiness"))
-    sides.append(DFMModuleGraphSide("DFM","DFMGameMode"))
-    sides.append(DFMModuleGraphSide("DFM","DFMGameCore"))
+    for layername in layernames:
+        CollectLayerNodes(basedir + "/Source/" + layername, layers, modules)    
+    pass
     
-    sides.append(DFMModuleGraphSide("DFMBusiness","DFMGameCore"))
-    sides.append(DFMModuleGraphSide("DFMGameMode","DFMGameCore"))
-
-    sides.append(DFMModuleGraphSide("DFMGameCore","GPFramework"))
-
     for layer in layers.values:
         CollectLayerSides(layer, sides,layers,modules)
     pass
+
+    for side in sides:
+        logging.info("%s --> %s", side.SrcNodeName, side.DstNodeName)
+    pass
+
+
 
 
 
@@ -111,5 +131,5 @@ def CommandLine(args):
 if __name__ == '__main__':
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
-    CommandLine(sys.argv)
-    CommandLine(["", r"I:\Project\DFMProj\DFM"])
+    #CommandLine(sys.argv)
+    CommandLine(["", r"I:\Project\DFMProj\DFM", r"Editor|DFMBusiness|DFMGameMode|DFMGameCore|GPFramework"])

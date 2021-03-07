@@ -23,7 +23,7 @@ public class {ModuleName} : ModuleRules
 		//---------------------------------------------------------------------
 
 		//---------------------------------------------------------------------
-		//对Foundations/GPFramework/DFMGameCore的依赖
+		//对游戏模块的依赖
 		//---------------------------------------------------------------------
 		PublicDependencyModuleNames.AddRange(new string[]{
 		});
@@ -38,10 +38,13 @@ public class {ModuleName} : ModuleRules
 		//---------------------------------------------------------------------
 		PublicIncludePaths.AddRange(new string[]
 		{
-			"{ModuleDirectory}",
-			"{ModuleDirectory}/Public",
+			ModuleDirectory,
+			ModuleDirectory + "/Public",
 		});
-		PrivateIncludePaths.AddRange(new string[]{"{ModuleDirectory}/Private"});
+		PrivateIncludePaths.AddRange(new string[]
+		{
+			ModuleDirectory + "/Private",
+		});
 		//---------------------------------------------------------------------
 
 

@@ -102,7 +102,7 @@ def CreateModule(dir):
         creator.CreateAll()
     pass
 
-def CreateModuleBatch(basedir):
+def CreateModulesOfLayer(basedir):
     dirs = os.listdir(basedir)
     for dir in dirs:
         dir = basedir + "/" + dir
@@ -111,31 +111,40 @@ def CreateModuleBatch(basedir):
         pass
     pass
 
-
+def CreateModulesOfPlugin(basedir):
+    dirs = os.listdir(basedir + "/Source")
+    for dir in dirs:
+        dir = basedir + "/Source/" + dir
+        if os.path.isdir(dir):
+            CreateModule(dir)
+        pass
+    pass
 
 
 def CommandLine(args):
     logging.getLogger().setLevel(logging.DEBUG)
     coloredlogs.install(level='DEBUG')
     logging.info(args)
-    if len(args) == 2:
-        CreateModule(args[1])
-    elif len(args) > 2 and args[2] == "-Batch":
-        CreateModuleBatch(args[1])
+    if args[1].lower() == "CreateModule".lower():
+        CreateModule(args[2])
+    elif args[1].lower() == "CreateModulesOfLayer".lower():
+        CreateModulesOfLayer(args[2])
+    elif args[1].lower() == "CreateModulesOfPlugin".lower():
+        CreateModulesOfPlugin(args[2])        
     pass
-    
-
 
 
 
 if __name__ == '__main__':
+    '''
+    python UE4ModuleCreator.py CreateModule {ModuleDir}
+    python UE4ModuleCreator.py CreateModulesOfLayer {LayerDir}
+    python UE4ModuleCreator.py CreateModulesOfPlugin {PluginDir}
+    '''
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     CommandLine(sys.argv)
-    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework\GPGameFlow"])
-    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework","-Batch"])
-    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore","-Batch"])
-    #CommandLine(["",r"W:\Project\DFMProj_Refactor\DFM\Source\DFMBusiness","-Batch"])
+
     
 
 

@@ -171,6 +171,11 @@ def CommandLine(args):
 
 
 if __name__ == '__main__':
+    '''
+    python SourceCodeUtils.py NormalizeIncludeSlash {DirOrPath}
+    python SourceCodeUtils.py NormalizeModuleAPIMacro {Dir}
+    python SourceCodeUtils.py ListNotUtf8SourceFile {Dir}
+    '''
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     CommandLine(sys.argv)

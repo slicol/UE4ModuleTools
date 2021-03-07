@@ -8,6 +8,7 @@ import SourceCodeUtils
 
 
 
+
 class UE4TargetRules:
     Type = ""
     Platform = ""
@@ -101,15 +102,23 @@ class UE4ModuleRules:
 def CommandLine(args):
     logging.getLogger().setLevel(logging.DEBUG)
     coloredlogs.install(level='DEBUG')
-    logging.info(args)
-    rules = UE4ModuleRules("GameFrameWork")
-    rules.LoadFromBuildFile(args[1])
-    rules.Dump()
+    logging.info(args)    
+    if len(args) > 2 and args[1].lower() == "dump" and args[2].lower().endswith("build.cs"):
+        name = os.path.basename(os.path.dirname(args[2]))
+        rules = UE4ModuleRules(name)
+        rules.LoadFromBuildFile(args[2])
+        rules.Dump()
+    else:
+        logging.error("args error: " + args)    
+    pass
     
 
 if __name__ == '__main__':
+    '''
+    python UE4ModuleRules.py Dump {ModuleBuildRulesPath}
+    '''
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     CommandLine(sys.argv)
-    #CommandLine(["",r"E:\Project\DFMProj\DFM\Source\GameFrameWork\GameFrameWork.Build.cs"])
+    #CommandLine(["", "Dump", r"L:\Project\TFW\Master\TFWeather\FourSeasons\Plugins\TFWeather\Source\TFWeather\TFWeather.Build.cs"])
     

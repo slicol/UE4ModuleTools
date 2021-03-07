@@ -154,18 +154,23 @@ def CommandLine(args):
     logging.getLogger().setLevel(logging.DEBUG)
     coloredlogs.install(level='DEBUG')
     logging.info(args)
-    module = UE4Module(args[1])
-    module.ParserSourceCode()
-    module.ParserRules()
-    module.Rules.Dump()
-    
-
+    if len(args) > 2 and args[1].lower() == "dump":
+        module = UE4Module(args[2])
+        module.ParserSourceCode()
+        module.ParserRules()
+        module.Rules.Dump()
+    else:
+        logging.error("args error: " + args)    
+    pass
 
 
 
 if __name__ == '__main__':
+    '''
+    python UE4Module.py Dump {ModuleDir}
+    '''    
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     CommandLine(sys.argv)
-    #CommandLine(["",r"E:\Project\DFMProj\DFM\Source\GameFrameWork"])
+    
     

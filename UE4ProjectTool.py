@@ -49,7 +49,7 @@ def CommandLine(args):
     logging.getLogger().setLevel(logging.DEBUG)
     coloredlogs.install(level='DEBUG')
     logging.info(args)
-    if args[1] == "GenLayer":
+    if args[1].lower() == "GenUProjectModuleConfigOfLayer".lower():
         GenUProjectModuleConfigOfLayer(args[2], args[3], args[4])
     pass
     
@@ -58,12 +58,15 @@ def CommandLine(args):
 
 
 if __name__ == '__main__':
+    '''
+    python UE4ProjectTool.py GenUProjectModuleConfigOfLayer {LayerDir} Runtime Default
+    '''
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     CommandLine(sys.argv)
-    #CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore", "Runtime", "Default"])
-    #CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework", "Runtime", "Default"])
-    #CommandLine(["", "GenLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\Editor", "Runtime", "Default"])
+    #CommandLine(["", "GenUProjectModuleConfigOfLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\DFMGameCore", "Runtime", "Default"])
+    #CommandLine(["", "GenUProjectModuleConfigOfLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\GPFramework", "Runtime", "Default"])
+    #CommandLine(["", "GenUProjectModuleConfigOfLayer", r"W:\Project\DFMProj_Refactor\DFM\Source\Editor", "Runtime", "Default"])
     
     
     

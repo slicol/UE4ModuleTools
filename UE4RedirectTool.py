@@ -65,7 +65,7 @@ class UE4CoreRedirects:
         pairs = self.NameMap.values()
         count = 0
         for pair in pairs:
-            if pair.OldName == pair.NewName or pair.OldName == "":
+            if pair.OldName == pair.NewName or pair.OldName == "" or pair.NewName == "":
                 continue
             pass
             
@@ -207,9 +207,9 @@ def CommandLine(args):
     logging.getLogger().setLevel(logging.WARN)
     coloredlogs.install(level='WARN')
     logging.info(args)
-    if args[1] == "GenRedirectConfig":
+    if args[1].lower() == "GenRedirectConfig".lower():
         GenRedirectConfig(args[2], args[3])
-    elif args[1] == "GenResavePackages":
+    elif args[1].lower() == "GenResavePackages".lower():
         GenResavePackages(args[2], args[3])
     pass
     
@@ -217,6 +217,10 @@ def CommandLine(args):
 
 
 if __name__ == '__main__':
+    '''
+    python UE4RedirectTool.py GenRedirectConfig {SrcProjectDir} {DstProjectDir}
+    python UE4RedirectTool.py GenResavePackages {ContentDir} {ExcludeKeywords}
+    '''
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     CommandLine(sys.argv)
