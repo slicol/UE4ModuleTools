@@ -39,8 +39,7 @@ class UE4ModuleRules:
         self.Logger.warning("-"*(100-len(self.Name)))
 
     def LoadFromBuildFile(self,path):
-        f = open(path, "r", encoding="UTF-8")
-        text = f.read()
+        text = FileUtils.GetFileString(path)
         text = SourceCodeUtils.TrimCStyleComments(text)
         self.PublicIncludePaths = self.FindList("PublicIncludePaths", text)
         self.PrivateIncludePaths = self.FindList("PrivateIncludePaths", text)
@@ -50,8 +49,10 @@ class UE4ModuleRules:
 
 
     def FindList(self, VarName, text):
-        RE_LIST_ASSIGN_CODE_ADDRANGE = VarName + "\.AddRange\s*\(.*?\{([\s\S]*?)\}\s*\)"
-        RE_LIST_ASSIGN_CODE_ADD      = VarName + "\.Add\s*\(([\s\S]*?)\)"
+        RE_LIST_ASSIGN_CODE_ADDRANGE = VarName + r"\.AddRange\s*\(.*?\s*\{([\s\S]*?)\}\s*\)"
+        RE_LIST_ASSIGN_CODE_ADD      = VarName + r"\.Add\s*\(([\s\S]*?)\)"
+        RE_LIST_ASSIGN_CODE_ADDLAYER = VarName + r"\.AddRange\s*\(\s*\w+\s*\(([\s\S]*?)\)\s*\)"
+
         result = []
         matches = re.findall(RE_LIST_ASSIGN_CODE_ADDRANGE, text)
         for match in matches:
@@ -65,6 +66,13 @@ class UE4ModuleRules:
             items = re.findall(r"\"(.+?)\"", match)
             for item in items:
                 result.append(item)
+            pass
+        pass
+        matches = re.findall(RE_LIST_ASSIGN_CODE_ADDLAYER, text)
+        for match in matches:
+            items = re.findall(r"\"(.+?)\"", match)
+            for item in items:
+                result.append("[Layer]" + item)
             pass
         pass
         return result

@@ -82,6 +82,29 @@ def GetAllLines(filepath):
     pass
     return lines
 
+def GetFileString(filepath)->str:
+    result = ""
+    try:
+        f = open(filepath,"r",encoding="UTF-8")
+        result = f.read()
+        f.close()
+    except Exception as e:
+        f.close()
+
+        try:
+            f = open(filepath, "r")
+            result = f.read()
+            f.close()
+        except Exception as e:
+            f.close()
+            
+            logging.error("GetFileString: %s", filepath)
+            logging.error(e)
+            result = ""
+        pass
+    pass
+    return result    
+
 
 def GetAllUE4ModuleDirs(src_dir):
     mdl_build_files = GetAllFiles(src_dir, ".Build.cs")
